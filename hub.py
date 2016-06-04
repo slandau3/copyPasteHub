@@ -4,15 +4,21 @@ import pyperclip
 import shelve
 import sys
 
+import hubGUI
+
 
 def add_entry(entry_name):
     entry_obj = shelve.open('saves')
 
     """Save the name and object to the file."""
     entry_obj[entry_name] = pyperclip.paste()
+
+    msg = ('%s successfully saved to the database!' % entry_name)
     print('%s successfully added to the database!' % entry_name)
     """Close the file"""
     entry_obj.close()
+
+    return msg
 
 
 def delete_entry(entry_name):
@@ -22,10 +28,12 @@ def delete_entry(entry_name):
     try:
         del entry_obj[entry_name]
     except KeyError:
-        raise Exception("That entry does not exist and cannot be deleted")
-    print('%s successfully deleted from the database!' % entry_name)
+        return 'That entry does not exist and cannot be deleted!'
+    msg = ('%s successfully deleted from the database!' % entry_name)
     """Close the file"""
     entry_obj.close()
+
+    return msg
 
 
 def get_entry(entry_name):
@@ -35,8 +43,8 @@ def get_entry(entry_name):
     try:
         value = entry_obj[entry_name]
     except KeyError:
-        raise Exception("That entry does not exist and cannot be retrieved.")
-
+        return 'That entry does not exist!'
+    msg = ('%s successfully retrieved from the database!' % entry_name)
     """Close the file."""
     entry_obj.close()
 
@@ -44,21 +52,34 @@ def get_entry(entry_name):
     print('%s successfully retrieved and copied to keyboard!' % entry_name)
     pyperclip.copy(value)
 
+    return msg
+
 
 def list_entries():
     entry_obj = shelve.open('saves')
-
+    msg = ""
     """Print out the name of every entry in the database."""
     if len(entry_obj.keys()) == 0:
-        print('The database is empty!')
+        msg = 'The database is empty!'
 
     else:
-        print("The database contains:")
+        entries = ""
+        #print("The database contains:")
         for i in entry_obj.keys():
-            print('\t', i)
+            entries += " " + i
+        entries = sorted(entries)
+        sorted_entries = ""
+        print(entries)
+        for word in entries:
+            if i != ' ':
+                sorted_entries += " " + word
+        pyperclip.copy(sorted_entries)
+        msg = 'Database content copied to clipboard!'
 
     """Close the file."""
     entry_obj.close()
+
+    return msg
 
 
 def rename_entry(entry_name, new_name):
@@ -86,46 +107,47 @@ def command_help():
 
 
 def main():
-    if len(sys.argv) == 1 or len(sys.argv) == 0:
-        while True:
-            command = str(input('\nPlease type a command: '))
-            command = command.split()
-
-            if len(command) == 1:
-                if command[0] == 'help':
-                    command_help()
-                    continue
-
-                elif command[0] == 'list' or command[0] == 'l' or command[0] == 'ls':
-                    list_entries()
-                    continue
-
-                elif command[0] == 'quit':
-                    quit()
-                    continue
-
-                else:
-                    command_help()
-                    continue
-            elif len(command) == 2:
-                if command[0] == 'a' or command[0] == 'add':
-                    add_entry(command[1])
-                    continue
-
-                elif command[0] == 'remove' or command[0] == 'del' or command[0] == 'delete':
-                    delete_entry(command[1])
-                    continue
-
-                elif command[0] == 'get':
-                    get_entry(command[1])
-                    continue
-
-                else:
-                    command_help()
-                    continue
-            elif len(command) == 3:
-                if command[0] == 'rename':
-                    rename_entry(command[1], command[2])
+    hubGUI.start()
+    # if len(sys.argv) == 1 or len(sys.argv) == 0:
+    #     while True:
+    #         command = str(input('\nPlease type a command: '))
+    #         command = command.split()
+    #
+    #         if len(command) == 1:
+    #             if command[0] == 'help':
+    #                 command_help()
+    #                 continue
+    #
+    #             elif command[0] == 'list' or command[0] == 'l' or command[0] == 'ls':
+    #                 list_entries()
+    #                 continue
+    #
+    #             elif command[0] == 'quit':
+    #                 quit()
+    #                 continue
+    #
+    #             else:
+    #                 command_help()
+    #                 continue
+    #         elif len(command) == 2:
+    #             if command[0] == 'a' or command[0] == 'add':
+    #                 add_entry(command[1])
+    #                 continue
+    #
+    #             elif command[0] == 'remove' or command[0] == 'del' or command[0] == 'delete':
+    #                 delete_entry(command[1])
+    #                 continue
+    #
+    #             elif command[0] == 'get':
+    #                 get_entry(command[1])
+    #                 continue
+    #
+    #             else:
+    #                 command_help()
+    #                 continue
+    #         elif len(command) == 3:
+    #             if command[0] == 'rename':
+    #                 rename_entry(command[1], command[2])
     """The following is the python argument integration. ***UNSTABLE***
     if sys.argv[0] == 'python3':
         operation = sys.argv[2]
