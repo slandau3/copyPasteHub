@@ -71,7 +71,7 @@ def list_entries():
         sorted_entries = ""
         print(entries)
         for word in entries:
-            if i != ' ':
+            if word != ' ':
                 sorted_entries += " " + word
         pyperclip.copy(sorted_entries)
         msg = 'Database content copied to clipboard!'
