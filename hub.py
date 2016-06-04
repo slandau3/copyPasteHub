@@ -63,10 +63,10 @@ def list_entries():
         msg = 'The database is empty!'
 
     else:
-        entries = ""
+        entries = []
         #print("The database contains:")
         for i in entry_obj.keys():
-            entries += " " + i
+            entries.append(i)
         entries = sorted(entries)
         sorted_entries = ""
         print(entries)
