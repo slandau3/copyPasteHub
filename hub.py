@@ -15,6 +15,7 @@ def add_entry(entry_name):
 
     msg = ('%s successfully saved to the database!' % entry_name)
     print('%s successfully added to the database!' % entry_name)
+
     """Close the file"""
     entry_obj.close()
 
@@ -30,6 +31,7 @@ def delete_entry(entry_name):
     except KeyError:
         return 'That entry does not exist and cannot be deleted!'
     msg = ('%s successfully deleted from the database!' % entry_name)
+
     """Close the file"""
     entry_obj.close()
 
@@ -45,6 +47,7 @@ def get_entry(entry_name):
     except KeyError:
         return 'That entry does not exist!'
     msg = ('%s successfully retrieved from the database!' % entry_name)
+
     """Close the file."""
     entry_obj.close()
 
@@ -58,6 +61,7 @@ def get_entry(entry_name):
 def list_entries():
     entry_obj = shelve.open('saves')
     msg = ""
+
     """Print out the name of every entry in the database."""
     if len(entry_obj.keys()) == 0:
         msg = 'The database is empty!'
@@ -65,14 +69,18 @@ def list_entries():
     else:
         entries = []
         #print("The database contains:")
+
         for i in entry_obj.keys():
             entries.append(i)
+
         entries = sorted(entries)
         sorted_entries = ""
         print(entries)
+
         for word in entries:
             if word != ' ':
                 sorted_entries += " " + word
+
         pyperclip.copy(sorted_entries)
         msg = 'Database content copied to clipboard!'
 
